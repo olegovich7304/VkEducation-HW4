@@ -84,6 +84,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 
     implementation("androidx.room:room-runtime:2.8.3")
     kapt("androidx.room:room-compiler:2.5.0")
