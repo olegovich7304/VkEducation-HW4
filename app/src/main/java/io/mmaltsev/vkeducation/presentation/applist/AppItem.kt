@@ -2,22 +2,13 @@ package io.mmaltsev.vkeducation.presentation.applist
 
 import androidx.compose.ui.graphics.Color
 
+/** UI-модель приложения: используется карточками (AppCard). */
 data class AppItem(
     val name: String,
     val description: String,
     val category: String,
     val icon: String,
     val color: Color,
-)
-
-/** Приложения для экрана списка (из прошлого ДЗ). */
-val catalogApps = listOf(
-    AppItem("YouTube", "Просмотр видео и каналов", "Развлечения", "Y", Color(0xFFFF0033)),
-    AppItem("Telegram", "Сообщения и звонки", "Общение", "T", Color(0xFF229ED9)),
-    AppItem("Spotify", "Музыка и подкасты", "Музыка", "S", Color(0xFF1DB954)),
-    AppItem("Google Maps", "Карты и навигация", "Путешествия", "M", Color(0xFF4285F4)),
-    AppItem("Gmail", "Электронная почта", "Работа", "G", Color(0xFFEA4335)),
-    AppItem("Duolingo", "Изучение иностранных языков", "Образование", "D", Color(0xFF58CC02)),
 )
 
 /** 9 приложений для блока «Витрина»: 3 страницы по 3 приложения. */
