@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.mmaltsev.vkeducation.domain.applist.GetAppListUseCase
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -13,7 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppListViewModel @Inject constructor() : ViewModel() {
+class AppListViewModel @Inject constructor(
+    private val getAppListUseCase: GetAppListUseCase,
+) : ViewModel() {
 
     private val _state = MutableStateFlow<AppListState>(AppListState.Loading)
     val state = _state.asStateFlow()
@@ -36,8 +38,8 @@ class AppListViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             Log.d(TAG, "loadApps() called")
             _state.value = AppListState.Loading
-            delay(1000) // имитация загрузки данных
-            _state.value = AppListState.Content(catalogApps)
+            val apps = getAppListUseCase().map { it.toUi() }
+            _state.value = AppListState.Content(apps)
         }
     }
 
