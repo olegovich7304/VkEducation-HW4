@@ -10,6 +10,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,6 +31,7 @@ class AppDetailsViewModel @Inject constructor(
     val events = _events.receiveAsFlow()
 
     private var loadingJob: Job? = null
+    private var installJob: Job? = null
 
     init {
         getAppDetails()
@@ -51,20 +53,65 @@ class AppDetailsViewModel @Inject constructor(
         }
     }
 
+    fun onInstallClick() {
+        val current = _state.value
+        if (current !is AppDetailsState.Content) return
+
+        when (current.installState) {
+            is InstallState.Installing -> {
+                // Отменяем корутину установки и возвращаем кнопку «Установить»
+                installJob?.cancel()
+                installJob = null
+                updateInstallState(InstallState.NotInstalled)
+            }
+
+            is InstallState.NotInstalled -> {
+                installJob = viewModelScope.launch {
+                    emulateInstall()
+                }
+            }
+
+            is InstallState.Installed -> {
+                // Приложение уже «установлено», кнопка «Открыть» пока заглушка
+                showUnderDevelopmentMessage()
+            }
+        }
+    }
+
+    private suspend fun emulateInstall() {
+        updateInstallState(InstallState.Installing(0))
+        for (progress in 5..100 step 5) {
+            delay(150)
+            updateInstallState(InstallState.Installing(progress))
+        }
+        updateInstallState(InstallState.Installed)
+    }
+
+    private fun updateInstallState(newState: InstallState) {
+        _state.update { currentState ->
+            if (currentState is AppDetailsState.Content) {
+                currentState.copy(installState = newState)
+            } else {
+                currentState
+            }
+        }
+    }
+
     fun getAppDetails() {
         loadingJob?.cancel()
+        installJob?.cancel()
         loadingJob = viewModelScope.launch {
             _state.value = AppDetailsState.Loading
 
             try {
                 val similarApps = getSimilarAppsUseCase()
                 getAppDetailsUseCase("fa2e31b8-1234-4cf7-9914-108a170a1b01").collect { appDetails ->
-                    val currentState = _state.value
+                    val currentContent = _state.value as? AppDetailsState.Content
                     _state.value = AppDetailsState.Content(
                         appDetails = appDetails,
                         similarApps = similarApps,
-                        descriptionCollapsed = (currentState as? AppDetailsState.Content)
-                            ?.descriptionCollapsed ?: false,
+                        descriptionCollapsed = currentContent?.descriptionCollapsed ?: false,
+                        installState = currentContent?.installState ?: InstallState.NotInstalled,
                     )
                 }
             } catch (e: CancellationException) {

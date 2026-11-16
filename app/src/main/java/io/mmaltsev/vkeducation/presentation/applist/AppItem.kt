@@ -10,6 +10,8 @@ data class AppItem(
     val icon: String,
     val color: Color,
     val iconUrl: String? = null,
+    val id: String = "",
+    val rating: Float? = null,
 )
 
 /** 9 приложений для блока «Витрина»: 3 страницы по 3 приложения. */

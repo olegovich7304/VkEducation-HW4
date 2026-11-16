@@ -10,4 +10,5 @@ fun AppListItem.toUi(): AppItem = AppItem(
     icon = name.take(1).uppercase(),
     color = Color(0xFF6750A4),
     iconUrl = iconUrl,
+    id = id,
 )
