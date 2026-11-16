@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -45,7 +46,6 @@ fun AppCatalogScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val toolbarMessage = stringResource(R.string.app_list_toolbar_message)
 
-    // Подписка на разовые события из ViewModel
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
             when (event) {
@@ -74,6 +74,17 @@ fun AppCatalogScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
+                    }
+                }
+
+                is AppListState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(onClick = viewModel::loadApps) {
+                            Text("Повторить загрузку")
+                        }
                     }
                 }
 

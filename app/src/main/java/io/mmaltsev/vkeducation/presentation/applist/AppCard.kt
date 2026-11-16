@@ -16,10 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 
 @Composable
 fun AppCard(
@@ -44,21 +47,32 @@ fun AppCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .background(
-                        app.color,
-                        RoundedCornerShape(14.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = app.icon,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+            if (app.iconUrl != null) {
+                AsyncImage(
+                    model = app.iconUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(14.dp)),
                 )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .background(
+                            app.color,
+                            RoundedCornerShape(14.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = app.icon,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
             Column(
