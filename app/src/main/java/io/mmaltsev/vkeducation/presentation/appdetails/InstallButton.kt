@@ -15,16 +15,24 @@ import io.mmaltsev.vkeducation.presentation.theme.VkEducationTheme
 
 @Composable
 fun InstallButton(
+    installState: InstallState,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val text = when (installState) {
+        is InstallState.NotInstalled -> stringResource(R.string.install)
+        is InstallState.Installing ->
+            "${stringResource(R.string.install_cancel)} (${installState.progress}%)"
+        is InstallState.Installed -> stringResource(R.string.install_open)
+    }
+
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
         contentPadding = PaddingValues(vertical = 12.dp),
         modifier = modifier,
     ) {
-        Text(text = stringResource(R.string.install))
+        Text(text = text)
     }
 }
 
@@ -33,6 +41,7 @@ fun InstallButton(
 private fun Preview() {
     VkEducationTheme {
         InstallButton(
+            installState = InstallState.Installing(45),
             onClick = {},
             modifier = Modifier.fillMaxWidth(),
         )

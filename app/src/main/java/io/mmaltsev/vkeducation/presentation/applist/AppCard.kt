@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import java.util.Locale
 
 @Composable
 fun AppCard(
@@ -80,12 +81,25 @@ fun AppCard(
                     .weight(1f)
                     .padding(start = 14.dp)
             ) {
-                Text(
-                    text = app.name,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF202124)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = app.name,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF202124),
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    if (app.rating != null) {
+                        Text(
+                            text = "★ " + "%.1f".format(Locale.US, app.rating),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFFF9A825),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(4.dp))
 

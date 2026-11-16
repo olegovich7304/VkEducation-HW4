@@ -7,8 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import io.mmaltsev.vkeducation.data.applist.AppListApi
 import io.mmaltsev.vkeducation.data.applist.AppListMapper
 import io.mmaltsev.vkeducation.data.applist.AppListRepositoryImpl
+import io.mmaltsev.vkeducation.data.applist.RatingApi
+import io.mmaltsev.vkeducation.data.applist.RatingsRepositoryImpl
 import io.mmaltsev.vkeducation.domain.applist.AppListRepository
 import io.mmaltsev.vkeducation.domain.applist.GetAppListUseCase
+import io.mmaltsev.vkeducation.domain.applist.RatingsRepository
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -37,4 +40,14 @@ object AppListModule {
     fun provideGetAppListUseCase(
         repository: AppListRepository,
     ): GetAppListUseCase = GetAppListUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideRatingApi(): RatingApi = RatingApi()
+
+    @Provides
+    @Singleton
+    fun provideRatingsRepository(
+        api: RatingApi,
+    ): RatingsRepository = RatingsRepositoryImpl(api)
 }

@@ -49,6 +49,7 @@ fun AppDetailsContent(
         )
         Spacer(Modifier.height(16.dp))
         InstallButton(
+            installState = content.installState,
             onClick = onInstallClick,
             modifier = Modifier
                 .fillMaxWidth()
